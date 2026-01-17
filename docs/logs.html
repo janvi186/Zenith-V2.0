@@ -198,7 +198,7 @@ footer { text-align: center; padding: 40px; color: var(--muted); font-size: 10px
 <script>
 async function loadLogs() {
     try {
-        const res = await fetch("http://127.0.0.1:5000/logs");
+        const res = await fetch("https://zenith-backend-dhro.onrender.com/logs");
         const data = await res.json();
         const table = document.getElementById("logTable");
         table.innerHTML = "";

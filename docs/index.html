@@ -379,7 +379,8 @@ async function analyze() {
     result.innerHTML = "<span style='color: var(--cyan)'>SCANNING NEURAL LAYERS...</span>";
 
     try {
-        const res = await fetch("https://your-backend.onrender.com/predict", {
+        const res = await fetch("https://zenith-backend-dhro.onrender.com/predict", {
+
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(window.samplePayload)
