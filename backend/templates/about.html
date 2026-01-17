@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>About | Intelligence Ledger</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #030712;
+    --card-bg: rgba(15, 23, 42, 0.6);
+    --border: rgba(56, 189, 248, 0.2);
+    --green: #10b981;
+    --red: #f43f5e;
+    --cyan: #38bdf8;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+}
+
+* { box-sizing: border-box; transition: all 0.3s ease; }
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* Glass Nav - Matches your Dashboard and Logs */
+.nav {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.nav a:hover { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+.nav a.active { color: var(--cyan); border-bottom: 2px solid var(--cyan); padding-bottom: 5px; }
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 60px 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+}
+
+h1 {
+    margin-top: 0;
+    font-size: 2.5rem;
+    background: linear-gradient(to right, #fff, var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+.section {
+    margin-top: 35px;
+}
+
+.section h3 {
+    color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section h3::before {
+    content: ">";
+    color: var(--green);
+}
+
+p {
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+li {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+}
+
+li:hover {
+    border-color: var(--cyan);
+    background: rgba(56, 189, 248, 0.05);
+}
+
+footer {
+    text-align: center;
+    margin-top: 60px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono';
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="nav">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/logs-page">Neural Logs</a>
+    <a href="/about" class="active">About</a>
+</nav>
+
+
+<div class="container">
+
+    <div class="card">
+        <h1>PROJECT ARCHITECTURE</h1>
+
+        <div class="section">
+            <h3>Overview</h3>
+            <p>
+                This Intrusion Detection System (IDS) represents a fusion of 
+                <b>Machine Learning</b> and <b>DBMS concepts</b>. By utilizing high-dimensional 
+                network data, the system identifies malicious patterns in real-time, 
+                providing a robust defense layer against evolving cyber threats.
+            </p>
+        </div>
+
+        <div class="section">
+            <h3>Core Stack</h3>
+            
+
+[Image of machine learning model development lifecycle]
+
+            <ul>
+                <li>Python & Flask (Logic Layer)</li>
+                <li>Random Forest (AI Engine)</li>
+                <li>SQLite (Persistent Storage)</li>
+                <li>CICIDS-2017 (Training Data)</li>
+                <li>HTML5 / CSS3 / JS (UI Layer)</li>
+                <li>Fetch API (Data Bridge)</li>
+            </ul>
+        </div>
+
+        
+        <div class="section">
+            <h3>Use Case</h3>
+            <p>
+                Designed for high-performance security monitoring in edge computing 
+                environments where immediate threat detection is critical for maintaining 
+                network integrity.
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        // ZENITH v2.0 // Janvi Ramachandran //
+    </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cyber IDS | AI Command Center</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+    --bg: #030712;
+    --card-bg: rgba(15, 23, 42, 0.6);
+    --border: rgba(56, 189, 248, 0.2);
+    --green: #10b981;
+    --red: #f43f5e;
+    --cyan: #38bdf8;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+}
+
+* { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+    color: var(--text);
+    min-height: 100vh;
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.nav {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.nav a:hover, .nav a.active { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+header { text-align: center; margin-bottom: 50px; }
+header h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 10px 0;
+    opacity: 0.8;
+}
+
+header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(to right, #fff, var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(34, 197, 94, 0.05);
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    margin-top: 15px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 25px;
+}
+
+.card:hover { border-color: var(--cyan); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+.card-main { grid-column: span 2; }
+
+.card h2 {
+    margin: 0 0 20px 0;
+    font-size: 14px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.scan-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+    overflow: visible;
+}
+
+.pulse-ring {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--cyan);
+    border-radius: 50%;
+    opacity: 0;
+    animation: pulse-out 3s infinite;
+    pointer-events: none;
+}
+
+.pulse-ring:nth-child(2) {
+    animation-delay: 1.5s;
+}
+
+@keyframes pulse-out {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { opacity: 0.5; border-color: var(--cyan); }
+    100% { transform: scale(3.5); opacity: 0; }
+}
+
+.scanning .pulse-ring {
+    animation-duration: 0.8s;
+    border-color: var(--red) !important;
+}
+
+button {
+    width: 100%;
+    padding: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--cyan), #0ea5e9);
+    color: white;
+    cursor: pointer;
+}
+
+button:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+.input-group { margin-bottom: 20px; }
+label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
+input[type="text"] {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+    font-family: 'JetBrains Mono';
+    outline: none;
+}
+input[type="text"]:focus { border-color: var(--cyan); }
+
+input[type="range"] {
+    width: 100%;
+    accent-color: var(--cyan);
+    cursor: pointer;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    text-align: center;
+    min-height: 65px;
+}
+
+.stat-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.stat { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; }
+.label { color: var(--muted); font-size: 11px; text-transform: uppercase; }
+
+.normal { color: var(--green); }
+.attack { color: var(--red); }
+
+#log-stream {
+    height: 150px;
+    overflow-y: auto;
+    font-family: 'JetBrains Mono';
+    font-size: 11px;
+    color: var(--cyan);
+    line-height: 1.8;
+    padding-right: 10px;
+}
+
+#log-stream::-webkit-scrollbar { width: 4px; }
+#log-stream::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+footer { text-align: center; margin-top: 50px; color: var(--muted); font-size: 11px; letter-spacing: 2px; opacity: 0.6; }
+
+/* Chart Styling Wrapper */
+.chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="nav">
+    <a href="/dashboard" class="active">Dashboard</a>
+    <a href="/logs-page">Neural Logs</a>
+    <a href="/about">System Specs</a>
+</nav>
+
+<div class="container">
+
+<header>
+    <h4>by Janvi Ramachandran</h4>
+    <h1>ZENITH v2.0</h1>
+    <div class="status"><div class="status-dot"></div>AI ENGINE LINKED</div>
+</header>
+
+<div class="grid">
+
+    <div class="card card-main">
+        <h2>Live Traffic Analysis</h2>
+        <div class="scan-container" id="radar-node">
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <button onclick="analyze()">RUN DEEP SCAN</button>
+        </div>
+        <div id="result" class="result"><span style="color: var(--muted)">SYSTEM IDLE...</span></div>
+    </div>
+
+    <div class="card">
+        <h2>Engine Configuration</h2>
+        <div class="input-group">
+            <label>Detection Sensitivity (<span id="sens-val">85</span>%)</label>
+            <input type="range" id="sensitivity" min="1" max="100" value="85" oninput="updateConfig('sensitivity')">
+        </div>
+        <div class="input-group">
+            <label>Operator Handle</label>
+            <input type="text" id="operator" placeholder="Admin_01" onchange="updateConfig('operator')">
+        </div>
+        <p class="label" style="font-size: 10px; line-height: 1.4;">Adjusting parameters recalibrates the Random Forest weights for current session.</p>
+    </div>
+
+    <div class="card">
+        <h2>Network Telemetry</h2>
+        <div class="chart-container">
+            <canvas id="threatChart"></canvas>
+        </div>
+        <div style="margin-top: 15px;">
+            <div class="stat-row">
+                <div class="label">Total Scan</div>
+                <div class="stat" id="total" style="font-size: 18px;">0</div>
+            </div>
+            <div class="stat-row">
+                <div class="label">Safe / Threats</div>
+                <div class="stat" style="font-size: 18px;">
+                    <span class="normal" id="normal">0</span> / <span class="attack" id="attack">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-main">
+        <h2>Real-Time Activity Feed</h2>
+        <div id="log-stream">
+            > Initializing System Guardian...<br>
+            > Handshake complete. Secure tunnel established.<br>
+            > Awaiting network packet capture...
+        </div>
+    </div>
+
+</div>
+
+<footer>// SECURE ACCESS ONLY // TERMINAL 0x4F2A</footer>
+
+</div>
+
+<script>
+window.samplePayload = { "Destination Port": 80, "Flow Duration": 12345, "Total Fwd Packets": 10, "Total Backward Packets": 5, "Total Length of Fwd Packets": 500, "Total Length of Bwd Packets": 200, "Flow Bytes/s": 2000, "Flow Packets/s": 15, "Flow IAT Mean": 50, "Flow IAT Std": 5, "Flow IAT Max": 200, "Flow IAT Min": 10 };
+
+let total = 0, normal = 0, attack = 0;
+
+// Initialize Doughnut Chart
+const ctx = document.getElementById('threatChart').getContext('2d');
+const threatChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Normal', 'Attack'],
+        datasets: [{
+            data: [1, 0], // Start with 1 for Normal to show the circle initially
+            backgroundColor: ['#10b981', '#f43f5e'],
+            borderColor: '#0f172a',
+            borderWidth: 2,
+            hoverOffset: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        cutout: '75%'
+    }
+});
+
+function updateConfig(type) {
+    const log = document.getElementById("log-stream");
+    if(type === 'sensitivity') {
+        const val = document.getElementById("sensitivity").value;
+        document.getElementById("sens-val").innerText = val;
+        log.innerHTML += `<br><span style="color:var(--muted)">> Config update: Sensitivity adjusted to ${val}%</span>`;
+    } else {
+        const name = document.getElementById("operator").value || "Admin_01";
+        log.innerHTML += `<br><span style="color:var(--muted)">> Operator changed: ${name} logged in.</span>`;
+    }
+    log.scrollTop = log.scrollHeight;
+}
+
+async function analyze() {
+    const result = document.getElementById("result");
+    const log = document.getElementById("log-stream");
+    const radar = document.getElementById("radar-node");
+
+    radar.classList.add("scanning");
+    result.innerHTML = "<span style='color: var(--cyan)'>SCANNING NEURAL LAYERS...</span>";
+
+    try {
+        const res = await fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(window.samplePayload)
+        });
+
+        const data = await res.json();
+        total++;
+        document.getElementById("total").innerText = total;
+
+        if (data.prediction === "ATTACK") {
+            attack++;
+            document.getElementById("attack").innerText = attack;
+            result.innerHTML = "<span class='attack'>⚠️ THREAT DETECTED</span>";
+            log.innerHTML += `<br>> [ALERT] Packet classified as ATTACK at ${new Date().toLocaleTimeString()}`;
+        } else {
+            normal++;
+            document.getElementById("normal").innerText = normal;
+            result.innerHTML = "<span class='normal'>✅ TRAFFIC SECURE</span>";
+            log.innerHTML += `<br>> [INFO] Packet verified CLEAR at ${new Date().toLocaleTimeString()}`;
+        }
+
+        // Update Chart Data
+        threatChart.data.datasets[0].data = [normal, attack];
+        threatChart.update();
+
+        log.scrollTop = log.scrollHeight;
+    } catch {
+        result.innerHTML = "<span class='attack'>BACKEND OFFLINE</span>";
+    } finally {
+        setTimeout(() => {
+            radar.classList.remove("scanning");
+        }, 1500);
+    }
+}
+</script>
+
+</body>
+</html>
